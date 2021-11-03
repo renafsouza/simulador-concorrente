@@ -4,20 +4,20 @@ Simulador de atendimento bancario que explora programação concorrente. Trabalh
 
 ## Como executar:
 
-com parâmetros padrão, executar:
+### Com parâmetros padrão, executar:
 
 ```
 make
 ```
 
-com parâmetros personalizados, executar:
+### Com parâmetros personalizados, executar:
 
 ```
 make build
 ./simulador.out $1 $2 $3 $4 $5 $6 $7
 ```
 
-onde:
+### Onde:
 
 $1 = tick
 
@@ -33,7 +33,7 @@ $6 = atendimento_interval_min
 
 $7 = atendimento_interval_max
 
-exemplo:
+### Exemplo:
 
 ```
 make build
