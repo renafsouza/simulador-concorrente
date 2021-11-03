@@ -10,16 +10,13 @@
 #include <stdio.h>
 #include <semaphore.h>
 #include <unistd.h>
-#include <chrono>
-#include <thread>
-#include <sstream>
 void print();
 void *printLoop (void *arg);
 void *clientBehavior (void *ptr);
 
 
 // PARÂMETROS
-float tick = 0.2; // Quantos segundos em um tick
+float tick = 1; // Quantos segundos em um tick
 int n_seats = 9; // Numero de assentos
 int n_columns = 3; // Numero de colunas de assentos (não interfere com a simulação)
 int client_interval[2] = {1,14}; // Limite inferior e superior do intervalo de segundos entre a chegada de novos clientes
@@ -45,13 +42,13 @@ int main (int argc, char *argv[])
 {
     if(argc==8){
         // Pega parâmetros da linha de comando
-        tick = std::__cxx11::stof(argv[1]);
-        n_seats = std::__cxx11::stoi(argv[2]);
-        n_columns = std::__cxx11::stoi(argv[3]);
-        client_interval[0] = std::__cxx11::stoi(argv[4]);
-        client_interval[1] = std::__cxx11::stoi(argv[5]);
-        atendimento_interval[0] = std::__cxx11::stoi(argv[6]);
-        atendimento_interval[1] = std::__cxx11::stoi(argv[7]);
+        tick = atof(argv[1]);
+        n_seats = atoi(argv[2]);
+        n_columns = atoi(argv[3]);
+        client_interval[0] = atoi(argv[4]);
+        client_interval[1] = atoi(argv[5]);
+        atendimento_interval[0] = atoi(argv[6]);
+        atendimento_interval[1] = atoi(argv[7]);
     }
 
     seats = (int*) malloc (n_seats*sizeof(int));
@@ -64,11 +61,11 @@ int main (int argc, char *argv[])
     pthread_t clients[n_seats];
     pthread_t printLoopThread;
     pthread_create (&printLoopThread, NULL, printLoop, NULL);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    usleep(1000000);
     while(1){
         pthread_create (&clients[esperandoCount], NULL, clientBehavior, NULL);
         int delay = rand()%client_interval[1]+client_interval[0];
-        std::this_thread::sleep_for(std::chrono::milliseconds((int)(delay*1000*tick)));
+        usleep(1000000*(int)(delay*tick));
         
     }
     exit (0);
@@ -98,7 +95,7 @@ void *clientBehavior (void *arg){
             seats[availableSeat] = 0;
             pthread_mutex_unlock(&seatsLock);
             while(--tempoDeAtendimento){
-                std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000*tick)));
+                usleep(1000*(int)(1000*tick));
             }
         atendendo=0;
         atendidosCount++;
@@ -155,6 +152,6 @@ void *printLoop (void *arg){
         system ("clear");
         print();
         // garante que não vai atualizar mais do que 60 vezes por segundo
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        usleep(16000);
     }
 }
